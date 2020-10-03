@@ -8,7 +8,7 @@ export const CarouselRenderer2d: FunctionComponent<CarouselRendererProps> = ({
   controller,
   children,
 }) => {
-  const currentChild = children[controller.currentIndex];
+  const currentChild = controller.itemAtOffset(0);
 
   return (
     <TransitionGroup
@@ -16,11 +16,7 @@ export const CarouselRenderer2d: FunctionComponent<CarouselRendererProps> = ({
         controller.action === null ? "next" : controller.action
       }`}
     >
-      <CSSTransition
-        timeout={500}
-        classNames="slide"
-        key={`slide-${controller.currentIndex}`}
-      >
+      <CSSTransition timeout={500} classNames="slide" key={currentChild.key}>
         <div className={`carousel-2d-slide ${styles.carousel_2d_slide}`}>
           {currentChild}
         </div>

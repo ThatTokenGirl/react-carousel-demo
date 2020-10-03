@@ -1,119 +1,128 @@
-import { createContext } from "react";
-import { CarouselItem } from "./carousel-item/carousel-item.component";
+import { Dispatch, SetStateAction } from "react";
 
 export interface CarouselControllerContextConstructor {
   new (): CarouselControllerContext;
 }
 
 export interface CarouselControllerContext {
-  readonly previousIndex: number | null;
-  readonly currentIndex: number;
-  readonly nextIndex: number | null;
-  readonly hasNext: boolean;
-  readonly hasPrevious: boolean;
-
   previous: () => void;
   next: () => void;
-  setItems: (items: any[]) => void;
+  setItems: (items: React.ReactElement[]) => void;
+  itemAtOffset(offset: number): React.ReactElement;
 }
 
 export class DefaultCarouselControllerContext
   implements CarouselControllerContext {
-  private _count: number = 0;
-  private _current: number = 0;
-
-  get previousIndex(): number | null {
-    return this.currentIndex === 0 ? null : this.currentIndex - 1;
-  }
-
-  get currentIndex() {
-    return this._current;
-  }
-
-  get nextIndex(): number | null {
-    const next = this.currentIndex + 1;
-
-    return next < this._count ? next : null;
-  }
-
-  get hasNext() {
-    return this.nextIndex !== null;
-  }
-
-  get hasPrevious() {
-    return this.previousIndex !== null;
-  }
+  private _items: React.ReactElement[] = [];
+  private _index: number = 0;
 
   previous() {
-    if (this.hasPrevious) {
-      this._current--;
+    this._index--;
+
+    if (this._index < 0) {
+      this._index = 0;
     }
   }
 
   next() {
-    if (this.hasNext) {
-      this._current++;
+    this._index++;
+
+    if (this._index >= this._items.length) {
+      this._index = this._items.length - 1;
     }
   }
 
-  setItems(items: typeof CarouselItem[]) {
-    this._count = items.length;
+  setItems(items: React.ReactElement<{}>[]) {
+    this._items = items;
+
+    if (this._index >= items.length) {
+      this._index = items.length - 1;
+    }
+  }
+
+  itemAtOffset(offset: number): React.ReactElement {
+    return this._items[offset + this._index];
   }
 }
 
 export class InfiniteCarouselControllerContext
   implements CarouselControllerContext {
-  private _count: number = 0;
-  private _current: number = 0;
-
-  get previousIndex(): number | null {
-    return this.currentIndex === 0 ? null : this.currentIndex - 1;
-  }
-
-  get currentIndex() {
-    return this._current;
-  }
-
-  get nextIndex(): number | null {
-    const next = this.currentIndex + 1;
-
-    return next < this._count ? next : null;
-  }
-
-  get hasNext() {
-    return true;
-  }
-
-  get hasPrevious() {
-    return true;
-  }
+  private _index: number = 0;
+  private _items: React.ReactElement[] = [];
 
   previous() {
-    this._current--;
+    this._index--;
 
-    if (this._current < 0) {
-      this._current = this._count - 1;
+    if (this._index < 0) {
+      this._index = this._items.length - 1;
     }
   }
 
   next() {
-    this._current++;
+    this._index++;
 
-    if (this._current >= this._count) {
-      this._current = 0;
+    if (this._index >= this._items.length) {
+      this._index = 0;
     }
   }
 
-  setItems(items: typeof CarouselItem[]) {
-    this._count = items.length;
+  setItems(items: React.ReactElement<{}>[]) {
+    this._items = items;
+  }
+
+  itemAtOffset(offset: number): React.ReactElement {
+    const position = this._index + offset;
+    const index =
+      position < 0
+        ? this._items.length + (position % this._items.length)
+        : position % this._items.length;
+
+    return this._items[index];
   }
 }
 
-export const CarouselController = createContext<CarouselControllerContext>(
-  new DefaultCarouselControllerContext()
-);
+export interface CarouselController extends CarouselControllerContext {
+  readonly action: CarouselAction;
+  readonly hasPrevious: boolean;
+  readonly hasNext: boolean;
+}
 
-export type CarouselController = CarouselControllerContext & {
-  action: "previous" | "next" | null;
-  lastCurrentIndex: number | null;
+export type CarouselAction = "none" | "next" | "previous";
+export type CarouselState = {
+  action: CarouselAction;
 };
+
+export function createController(
+  _context: CarouselControllerContext,
+  { action }: CarouselState,
+  dispatch: Dispatch<SetStateAction<CarouselState>>
+): CarouselController {
+  return {
+    action,
+
+    get hasPrevious() {
+      return !!this.itemAtOffset(-1);
+    },
+    get hasNext() {
+      return !!this.itemAtOffset(1);
+    },
+
+    previous() {
+      _context.previous();
+      dispatch({ action: "previous" });
+    },
+
+    next() {
+      _context.next();
+      dispatch({ action: "next" });
+    },
+
+    setItems(items: React.ReactElement<{}>[]) {
+      _context.setItems(items);
+    },
+
+    itemAtOffset(offset: number): React.ReactElement<{}> {
+      return _context.itemAtOffset(offset);
+    },
+  };
+}

@@ -1,0 +1,13 @@
+.carousel_2d {
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel_2d_slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}

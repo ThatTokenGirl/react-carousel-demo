@@ -1,0 +1,47 @@
+$animation-time: 500ms;
+
+.carousel_2d.carousel_2d_next-enter {
+  transform: translate(0, 0);
+}
+
+.carousel_2d {
+  &.next {
+    > .slide-enter {
+      transform: translate(100%, 0);
+    }
+
+    > .slide-enter.slide-enter-active {
+      transform: translate(0, 0);
+      transition: transform $animation-time ease-in;
+    }
+
+    > .slide-exit {
+      transform: translate(0, 0);
+    }
+
+    > .slide-exit.slide-exit-active {
+      transform: translate(-100%, 0);
+      transition: transform $animation-time ease-in;
+    }
+  }
+
+  &.previous {
+    > .slide-enter {
+      transform: translate(-100%, 0);
+    }
+
+    > .slide-enter.slide-enter-active {
+      transform: translate(0, 0);
+      transition: transform $animation-time ease-in;
+    }
+
+    > .slide-exit {
+      transform: translate(0, 0);
+    }
+
+    > .slide-exit.slide-exit-active {
+      transform: translate(100%, 0);
+      transition: transform $animation-time ease-in;
+    }
+  }
+}

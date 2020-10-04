@@ -1,13 +1,12 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useContext } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { CarouselContext } from "../../carousel.context";
 import { CarouselRendererProps } from "../carousel-renderer";
 import "./renderer-2d.animations.scss";
 import styles from "./renderer-2d.module.scss";
 
-export const CarouselRenderer2d: FunctionComponent<CarouselRendererProps> = ({
-  controller,
-  children,
-}) => {
+export const CarouselRenderer2d: FunctionComponent<CarouselRendererProps> = () => {
+  const controller = useContext(CarouselContext);
   const currentChild = controller.itemAtOffset(0);
 
   return (

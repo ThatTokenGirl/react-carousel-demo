@@ -1,11 +1,12 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useContext } from "react";
+import { CarouselContext } from "../../carousel.context";
 import { CarouselControlProps } from "../carousel-control";
 import styles from "./navigation-buttons.module.scss";
 
 export const CarouselNavigationButtons: FunctionComponent<CarouselControlProps> = ({
-  controller,
   children,
 }) => {
+  const controller = useContext(CarouselContext);
   const buttons: any[] = [];
 
   if (controller.hasPrevious) {

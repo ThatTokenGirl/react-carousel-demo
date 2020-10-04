@@ -2,6 +2,7 @@ import React, { FunctionComponent, useRef, useState } from "react";
 import { CarouselControlProps } from "./carousel-controls";
 import { CarouselItem } from "./carousel-item/carousel-item.component";
 import {
+  CarouselContext,
   CarouselControllerContext,
   CarouselControllerContextConstructor,
   CarouselState,
@@ -43,16 +44,18 @@ export const Carousel: FunctionComponent<CarouselProps> = ({
 
   carouselController.setItems(items as any);
 
-  const Display = <Renderer controller={carouselController}>{items}</Renderer>;
+  const Display = <Renderer>{items}</Renderer>;
   const rendered =
     controls && controls.length
       ? controls.reduceRight(
-          (element, Control) => (
-            <Control controller={carouselController}>{element}</Control>
-          ),
+          (element, Control) => <Control>{element}</Control>,
           Display
         )
       : Display;
 
-  return rendered;
+  return (
+    <CarouselContext.Provider value={carouselController}>
+      {rendered}
+    </CarouselContext.Provider>
+  );
 };

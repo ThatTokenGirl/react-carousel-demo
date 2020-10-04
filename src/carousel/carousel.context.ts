@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 
 export interface CarouselControllerContextConstructor {
   new (): CarouselControllerContext;
@@ -126,3 +126,11 @@ export function createController(
     },
   };
 }
+
+export const CarouselContext = createContext<CarouselController>(
+  createController(
+    new DefaultCarouselControllerContext(),
+    { action: "none" },
+    () => {}
+  )
+);

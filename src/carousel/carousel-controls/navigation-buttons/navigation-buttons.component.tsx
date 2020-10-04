@@ -8,7 +8,7 @@ export class CarouselNavigationButtons extends CarouselControl {
     const buttons: any[] = [];
     const { children } = this.props;
 
-    if (controller.hasPrevious) {
+    if (!!controller.itemAtOffset(-1)) {
       const backButton = React.Children.toArray(children).find(
         (element) =>
           typeof element === "object" &&
@@ -19,7 +19,7 @@ export class CarouselNavigationButtons extends CarouselControl {
       buttons.push(backButton);
     }
 
-    if (controller.hasNext) {
+    if (!!controller.itemAtOffset(1)) {
       const nextButton = React.Children.toArray(children).find(
         (element) =>
           typeof element === "object" &&
@@ -39,7 +39,7 @@ export const BackButton: FunctionComponent = ({ children }) => {
   return (
     <button
       className="carousel-navigation-previous"
-      onClick={() => controller.previous()}
+      onClick={() => controller.gotoOffset(-1)}
     >
       {!children ? "<- Previous" : children}
     </button>
@@ -52,7 +52,7 @@ export const NextButton: FunctionComponent = ({ children }) => {
   return (
     <button
       className="carousel-navigation-next"
-      onClick={() => controller.next()}
+      onClick={() => controller.gotoOffset(1)}
     >
       {!children ? "Next ->" : children}
     </button>

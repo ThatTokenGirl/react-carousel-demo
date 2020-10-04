@@ -12,7 +12,7 @@ export class CarouselRenderer2d extends CarouselRenderer {
     return (
       <TransitionGroup
         className={`carousel_2d ${styles.carousel_2d} ${
-          controller.action === null ? "next" : controller.action
+          controller.action === null ? "forward" : controller.action
         }`}
       >
         <CSSTransition timeout={500} classNames="slide" key={currentChild.key}>

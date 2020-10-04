@@ -5,7 +5,7 @@ $animation-time: 500ms;
 }
 
 .carousel_2d {
-  &.next {
+  &.forward {
     > .slide-enter {
       transform: translate(100%, 0);
     }
@@ -25,7 +25,7 @@ $animation-time: 500ms;
     }
   }
 
-  &.previous {
+  &.back {
     > .slide-enter {
       transform: translate(-100%, 0);
     }

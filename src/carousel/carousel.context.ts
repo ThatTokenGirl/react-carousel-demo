@@ -5,10 +5,12 @@ export interface CarouselControllerContextConstructor {
 }
 
 export interface CarouselControllerContext {
-  previous: () => void;
-  next: () => void;
-  setItems: (items: React.ReactElement[]) => void;
-  itemAtOffset(offset: number): React.ReactElement;
+  readonly length: number;
+  readonly currentIndex: number;
+
+  setItems(items: React.ReactElement[]): void;
+  gotoOffset(offset: number): void;
+  itemAtOffset(index: number): React.ReactElement;
 }
 
 export class DefaultCarouselControllerContext
@@ -16,20 +18,12 @@ export class DefaultCarouselControllerContext
   private _items: React.ReactElement[] = [];
   private _index: number = 0;
 
-  previous() {
-    this._index--;
-
-    if (this._index < 0) {
-      this._index = 0;
-    }
+  get length() {
+    return this._items.length;
   }
 
-  next() {
-    this._index++;
-
-    if (this._index >= this._items.length) {
-      this._index = this._items.length - 1;
-    }
+  get currentIndex() {
+    return this._index;
   }
 
   setItems(items: React.ReactElement<{}>[]) {
@@ -38,6 +32,13 @@ export class DefaultCarouselControllerContext
     if (this._index >= items.length) {
       this._index = items.length - 1;
     }
+  }
+
+  gotoOffset(offset: number) {
+    const position = this.length + offset;
+
+    this._index =
+      position <= 0 ? 0 : position >= this.length ? this.length - 1 : position;
   }
 
   itemAtOffset(offset: number): React.ReactElement {
@@ -50,44 +51,41 @@ export class InfiniteCarouselControllerContext
   private _index: number = 0;
   private _items: React.ReactElement[] = [];
 
-  previous() {
-    this._index--;
-
-    if (this._index < 0) {
-      this._index = this._items.length - 1;
-    }
+  get length() {
+    return this._items.length;
   }
-
-  next() {
-    this._index++;
-
-    if (this._index >= this._items.length) {
-      this._index = 0;
-    }
+  get currentIndex() {
+    return this._index;
   }
 
   setItems(items: React.ReactElement<{}>[]) {
     this._items = items;
   }
 
+  gotoOffset(offset: number) {
+    this._index = this._getOffsetPosition(offset);
+  }
+
   itemAtOffset(offset: number): React.ReactElement {
+    return this._items[this._getOffsetPosition(offset)];
+  }
+
+  private _getOffsetPosition(offset: number) {
     const position = this._index + offset;
     const index =
       position < 0
         ? this._items.length + (position % this._items.length)
         : position % this._items.length;
 
-    return this._items[index];
+    return index;
   }
 }
 
 export interface CarouselController extends CarouselControllerContext {
   readonly action: CarouselAction;
-  readonly hasPrevious: boolean;
-  readonly hasNext: boolean;
 }
 
-export type CarouselAction = "none" | "next" | "previous";
+export type CarouselAction = "none" | "forward" | "back";
 export type CarouselState = {
   action: CarouselAction;
 };
@@ -100,25 +98,23 @@ export function createController(
   return {
     action,
 
-    get hasPrevious() {
-      return !!this.itemAtOffset(-1);
-    },
-    get hasNext() {
-      return !!this.itemAtOffset(1);
+    get length() {
+      return this.length;
     },
 
-    previous() {
-      _context.previous();
-      dispatch({ action: "previous" });
-    },
-
-    next() {
-      _context.next();
-      dispatch({ action: "next" });
+    get currentIndex() {
+      return this.currentIndex;
     },
 
     setItems(items: React.ReactElement<{}>[]) {
       _context.setItems(items);
+    },
+
+    gotoOffset(offset: number) {
+      _context.gotoOffset(offset);
+      dispatch({
+        action: offset === 0 ? "none" : offset > 0 ? "forward" : "back",
+      });
     },
 
     itemAtOffset(offset: number): React.ReactElement<{}> {

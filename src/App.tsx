@@ -10,11 +10,8 @@ import { InfiniteCarouselControllerContext } from "./carousel/carousel.context";
 
 function App() {
   return (
-    <Carousel
-      display={CarouselRenderer2d}
-      controller={InfiniteCarouselControllerContext}
-      controls={[CarouselNavigationButtons]}
-    >
+    <Carousel controller={InfiniteCarouselControllerContext}>
+      <CarouselRenderer2d></CarouselRenderer2d>
       <CarouselItem>
         <div className="item" style={{ backgroundColor: "#2c3e50" }}>
           One
@@ -30,6 +27,7 @@ function App() {
           Three
         </div>
       </CarouselItem>
+      <CarouselNavigationButtons></CarouselNavigationButtons>
     </Carousel>
   );
 }

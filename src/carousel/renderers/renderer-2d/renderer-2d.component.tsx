@@ -1,25 +1,26 @@
-import React, { FunctionComponent, useContext } from "react";
+import React from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { CarouselContext } from "../../carousel.context";
-import { CarouselRendererProps } from "../carousel-renderer";
+import { CarouselRenderer } from "../carousel-renderer";
 import "./renderer-2d.animations.scss";
 import styles from "./renderer-2d.module.scss";
 
-export const CarouselRenderer2d: FunctionComponent<CarouselRendererProps> = () => {
-  const controller = useContext(CarouselContext);
-  const currentChild = controller.itemAtOffset(0);
+export class CarouselRenderer2d extends CarouselRenderer {
+  render() {
+    const controller = this.context;
+    const currentChild = controller.itemAtOffset(0);
 
-  return (
-    <TransitionGroup
-      className={`carousel_2d ${styles.carousel_2d} ${
-        controller.action === null ? "next" : controller.action
-      }`}
-    >
-      <CSSTransition timeout={500} classNames="slide" key={currentChild.key}>
-        <div className={`carousel-2d-slide ${styles.carousel_2d_slide}`}>
-          {currentChild}
-        </div>
-      </CSSTransition>
-    </TransitionGroup>
-  );
-};
+    return (
+      <TransitionGroup
+        className={`carousel_2d ${styles.carousel_2d} ${
+          controller.action === null ? "next" : controller.action
+        }`}
+      >
+        <CSSTransition timeout={500} classNames="slide" key={currentChild.key}>
+          <div className={`carousel-2d-slide ${styles.carousel_2d_slide}`}>
+            {currentChild}
+          </div>
+        </CSSTransition>
+      </TransitionGroup>
+    );
+  }
+}

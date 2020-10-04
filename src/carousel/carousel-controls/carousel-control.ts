@@ -1,8 +1,12 @@
-import { FunctionComponent } from "react";
-import { CarouselRendererProps } from "../renderers";
+import { Component, ContextType, ReactNode } from "react";
+import { CarouselContext } from "../carousel.context";
 
-export type CarouselControlProps = {
-  children:
-    | React.ReactElement<FunctionComponent<CarouselControlProps>>
-    | React.ReactElement<FunctionComponent<CarouselRendererProps>>;
-};
+export type CarouselControlProps = {};
+
+export abstract class CarouselControl extends Component<CarouselControlProps> {
+  static contextType = CarouselContext;
+
+  context!: ContextType<typeof CarouselContext>;
+
+  abstract render(): ReactNode;
+}

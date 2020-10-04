@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useRef, useState } from "react";
-import { CarouselControlProps } from "./carousel-controls";
+import { CarouselControl, CarouselControlProps } from "./carousel-controls";
 import { CarouselItem } from "./carousel-item/carousel-item.component";
 import {
   CarouselContext,
@@ -9,17 +9,14 @@ import {
   createController,
   DefaultCarouselControllerContext,
 } from "./carousel.context";
-import { CarouselRendererProps } from "./renderers";
+import { CarouselRenderer } from "./renderers";
 
 export type CarouselProps = {
-  display: FunctionComponent<CarouselRendererProps>;
   controls?: FunctionComponent<CarouselControlProps>[];
   controller?: CarouselControllerContext | CarouselControllerContextConstructor;
 };
 
 export const Carousel: FunctionComponent<CarouselProps> = ({
-  display: Renderer,
-  controls,
   controller,
   children,
 }) => {
@@ -31,6 +28,19 @@ export const Carousel: FunctionComponent<CarouselProps> = ({
 
   const [state, setState] = useState<CarouselState>({ action: "none" });
 
+  const renderer =
+    children instanceof Array
+      ? (children as React.ReactElement[]).find(
+          ({ type }) =>
+            typeof type === "function" &&
+            type.prototype instanceof CarouselRenderer
+        )
+      : null;
+
+  if (!renderer) {
+    throw Error(`Carousel renderer must be specified`);
+  }
+
   const items =
     children instanceof Array
       ? (children as React.ReactElement[])
@@ -40,22 +50,30 @@ export const Carousel: FunctionComponent<CarouselProps> = ({
           )
       : [];
 
+  const controls =
+    children instanceof Array
+      ? (children as React.ReactElement[])
+          .filter(
+            ({ type }) =>
+              typeof type === "function" &&
+              type.prototype instanceof CarouselControl
+          )
+          .map((item, index) =>
+            React.cloneElement(item, { key: `control-${index}` })
+          )
+      : [];
+
   const carouselController = createController(ref.current, state, setState);
 
   carouselController.setItems(items as any);
 
-  const Display = <Renderer>{items}</Renderer>;
-  const rendered =
-    controls && controls.length
-      ? controls.reduceRight(
-          (element, Control) => <Control>{element}</Control>,
-          Display
-        )
-      : Display;
-
   return (
     <CarouselContext.Provider value={carouselController}>
-      {rendered}
+      <div className="carousel-container">
+        {renderer}
+
+        <div className="carousel-controls-container">{controls}</div>
+      </div>
     </CarouselContext.Provider>
   );
 };

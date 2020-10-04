@@ -1,10 +1,12 @@
 import React from "react";
 import "./App.css";
 import {
+  BackButton,
   Carousel,
   CarouselItem,
   CarouselNavigationButtons,
   CarouselRenderer2d,
+  NextButton,
 } from "./carousel";
 import { InfiniteCarouselControllerContext } from "./carousel/carousel.context";
 
@@ -27,7 +29,10 @@ function App() {
           Three
         </div>
       </CarouselItem>
-      <CarouselNavigationButtons></CarouselNavigationButtons>
+      <CarouselNavigationButtons>
+        <BackButton>&lsaquo;</BackButton>
+        <NextButton>&rsaquo;</NextButton>
+      </CarouselNavigationButtons>
     </Carousel>
   );
 }

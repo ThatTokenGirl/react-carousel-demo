@@ -1,42 +1,60 @@
-import React from "react";
+import React, { FunctionComponent, useContext } from "react";
+import { CarouselContext } from "../../carousel.context";
 import { CarouselControl } from "../carousel-control";
-import styles from "./navigation-buttons.module.scss";
 
 export class CarouselNavigationButtons extends CarouselControl {
   render() {
-    const controller = this.context;
+    const { context: controller } = this;
     const buttons: any[] = [];
+    const { children } = this.props;
 
     if (controller.hasPrevious) {
-      buttons.push(
-        <button
-          key="previous"
-          className={styles.navigation_previous}
-          onClick={() => controller.previous()}
-        >
-          {"<- Previous"}
-        </button>
+      const backButton = React.Children.toArray(children).find(
+        (element) =>
+          typeof element === "object" &&
+          "type" in element &&
+          element.type === BackButton
       );
+
+      buttons.push(backButton);
     }
 
     if (controller.hasNext) {
-      buttons.push(
-        <button
-          key="next"
-          className={styles.navigation_next}
-          onClick={() => controller.next()}
-        >
-          {"Next ->"}
-        </button>
+      const nextButton = React.Children.toArray(children).find(
+        (element) =>
+          typeof element === "object" &&
+          "type" in element &&
+          element.type === NextButton
       );
+      buttons.push(nextButton);
     }
 
-    return (
-      <div className={styles.navigation_container}>
-        {this.props.children}
-
-        <div className={styles.navigation_buttons}>{buttons}</div>
-      </div>
-    );
+    return <>{buttons}</>;
   }
 }
+
+export const BackButton: FunctionComponent = ({ children }) => {
+  const controller = useContext(CarouselContext);
+
+  return (
+    <button
+      className="carousel-navigation-previous"
+      onClick={() => controller.previous()}
+    >
+      {!children ? "<- Previous" : children}
+    </button>
+  );
+};
+
+export const NextButton: FunctionComponent = ({ children }) => {
+  const controller = useContext(CarouselContext);
+
+  return (
+    <button
+      className="carousel-navigation-next"
+      onClick={() => controller.next()}
+    >
+      {!children ? "Next ->" : children}
+    </button>
+  );
+};

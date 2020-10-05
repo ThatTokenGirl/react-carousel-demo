@@ -1,5 +1,7 @@
 .carousel-container {
   position: relative;
+  width: 1280px;
+  height: 720px;
 }
 
 .carousel-controls-container {

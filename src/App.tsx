@@ -1,6 +1,12 @@
 import React from "react";
 import "./App.css";
-import { BackButton, Carousel2d, CarouselItem, NextButton } from "./carousel";
+import {
+  AutoScroll,
+  BackButton,
+  Carousel2d,
+  CarouselItem,
+  NextButton,
+} from "./carousel";
 import { NavigationButtonCollectionComponent } from "./carousel/carousel-controls/navigation-button-collection/navigation-button-collection.component";
 import { InfiniteCarouselControllerContext } from "./carousel/carousel.context";
 
@@ -22,6 +28,7 @@ function App() {
           Three
         </div>
       </CarouselItem>
+      <AutoScroll duration={3000}></AutoScroll>
       <BackButton>&lsaquo;</BackButton>
       <NavigationButtonCollectionComponent></NavigationButtonCollectionComponent>
       <NextButton>&rsaquo;</NextButton>

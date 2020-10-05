@@ -35,7 +35,7 @@ export class DefaultCarouselControllerContext
   }
 
   gotoOffset(offset: number) {
-    const position = this.length + offset;
+    const position = this.currentIndex + offset;
 
     this._index =
       position <= 0 ? 0 : position >= this.length ? this.length - 1 : position;
@@ -99,11 +99,11 @@ export function createController(
     action,
 
     get length() {
-      return this.length;
+      return _context.length;
     },
 
     get currentIndex() {
-      return this.currentIndex;
+      return _context.currentIndex;
     },
 
     setItems(items: React.ReactElement<{}>[]) {

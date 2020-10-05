@@ -3,7 +3,9 @@ import { CarouselContext } from "../carousel.context";
 
 export type CarouselControlProps = {};
 
-export abstract class CarouselControl extends Component<CarouselControlProps> {
+export abstract class CarouselControl<
+  P extends CarouselControlProps = CarouselControlProps
+> extends Component<P> {
   static contextType = CarouselContext;
 
   context!: ContextType<typeof CarouselContext>;

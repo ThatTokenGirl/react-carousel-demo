@@ -4,10 +4,10 @@ import {
   BackButton,
   Carousel,
   CarouselItem,
-  CarouselNavigationButtons,
   CarouselRenderer2d,
   NextButton,
 } from "./carousel";
+import { NavigationButtonCollectionComponent } from "./carousel/carousel-controls/navigation-button-collection/navigation-button-collection.component";
 import { InfiniteCarouselControllerContext } from "./carousel/carousel.context";
 
 function App() {
@@ -29,10 +29,9 @@ function App() {
           Three
         </div>
       </CarouselItem>
-      <CarouselNavigationButtons>
-        <BackButton>&lsaquo;</BackButton>
-        <NextButton>&rsaquo;</NextButton>
-      </CarouselNavigationButtons>
+      <BackButton>&lsaquo;</BackButton>
+      <NavigationButtonCollectionComponent></NavigationButtonCollectionComponent>
+      <NextButton>&rsaquo;</NextButton>
     </Carousel>
   );
 }

@@ -1,19 +1,12 @@
 import React from "react";
 import "./App.css";
-import {
-  BackButton,
-  Carousel,
-  CarouselItem,
-  CarouselRenderer2d,
-  NextButton,
-} from "./carousel";
+import { BackButton, Carousel2d, CarouselItem, NextButton } from "./carousel";
 import { NavigationButtonCollectionComponent } from "./carousel/carousel-controls/navigation-button-collection/navigation-button-collection.component";
 import { InfiniteCarouselControllerContext } from "./carousel/carousel.context";
 
 function App() {
   return (
-    <Carousel controller={InfiniteCarouselControllerContext}>
-      <CarouselRenderer2d></CarouselRenderer2d>
+    <Carousel2d controller={InfiniteCarouselControllerContext}>
       <CarouselItem>
         <div className="item" style={{ backgroundColor: "#2c3e50" }}>
           One
@@ -32,7 +25,7 @@ function App() {
       <BackButton>&lsaquo;</BackButton>
       <NavigationButtonCollectionComponent></NavigationButtonCollectionComponent>
       <NextButton>&rsaquo;</NextButton>
-    </Carousel>
+    </Carousel2d>
   );
 }
 

@@ -1,0 +1,16 @@
+.carousel_3d {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 2000px;
+}
+
+.carousel_3d_slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  transition: all 500ms ease-in;
+}

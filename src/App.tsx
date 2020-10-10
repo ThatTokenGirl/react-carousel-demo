@@ -6,42 +6,45 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import theme from "./theme";
 import "./App.css";
 import {
   AutoScroll,
   BackButton,
-  Carousel2d,
+  Carousel,
   CarouselItem,
+  CarouselRenderer2d,
+  CarouselRenderer3d,
   NextButton,
 } from "./carousel";
 import { NavigationButtonCollectionComponent } from "./carousel/carousel-controls/navigation-button-collection/navigation-button-collection.component";
 import { InfiniteCarouselControllerContext } from "./carousel/carousel.context";
+import theme from "./theme";
 
 type AppState = {
   renderer: "2d" | "3d";
   autoplay: boolean;
+  displayableFor3d: number;
 };
 
 function App() {
   const [state, setState] = useState<AppState>({
-    renderer: "2d",
+    renderer: "3d",
     autoplay: false,
+    displayableFor3d: 5,
   });
 
   const merge = (partial: Partial<AppState>) => {
     setState({ ...state, ...partial });
   };
 
-  const controls = [];
-
-  if (state.autoplay) controls.push(<AutoScroll duration={3000}></AutoScroll>);
-
-  controls.push(<BackButton>&lsaquo;</BackButton>);
-  controls.push(
-    <NavigationButtonCollectionComponent></NavigationButtonCollectionComponent>
-  );
-  controls.push(<NextButton>&rsaquo;</NextButton>);
+  const renderer =
+    state.renderer === "2d" ? (
+      <CarouselRenderer2d></CarouselRenderer2d>
+    ) : (
+      <CarouselRenderer3d
+        displayable={state.displayableFor3d}
+      ></CarouselRenderer3d>
+    );
 
   return (
     <ThemeProvider theme={theme}>
@@ -69,10 +72,36 @@ function App() {
             onChange={() => merge({ autoplay: !state.autoplay })}
           />
         }
-        label="Autoply"
+        label="Autoplay"
       />
+      {state.renderer === "3d" && (
+        <FormControlLabel
+          className="slide-selector"
+          control={
+            <ButtonGroup>
+              {Array.from(Array(6)).map((_, index) => (
+                <Button
+                  key={index}
+                  color="primary"
+                  variant={
+                    state.displayableFor3d === index + 3
+                      ? "contained"
+                      : "outlined"
+                  }
+                  onClick={() => merge({ displayableFor3d: index + 3 })}
+                >
+                  {index + 3}
+                </Button>
+              ))}
+            </ButtonGroup>
+          }
+          label="# Displayable Slides"
+          labelPlacement="top"
+        />
+      )}
 
-      <Carousel2d controller={InfiniteCarouselControllerContext}>
+      <Carousel controller={InfiniteCarouselControllerContext}>
+        {renderer}
         <CarouselItem>
           <div className="item" style={{ backgroundColor: "#2c3e50" }}>
             One
@@ -88,8 +117,48 @@ function App() {
             Three
           </div>
         </CarouselItem>
-        {controls}
-      </Carousel2d>
+        <CarouselItem>
+          <div className="item" style={{ backgroundColor: "#fbc531" }}>
+            Four
+          </div>
+        </CarouselItem>
+        <CarouselItem>
+          <div className="item" style={{ backgroundColor: "#353b48" }}>
+            Five
+          </div>
+        </CarouselItem>
+        <CarouselItem>
+          <div className="item" style={{ backgroundColor: "#487eb0" }}>
+            Six
+          </div>
+        </CarouselItem>
+        <CarouselItem>
+          <div className="item" style={{ backgroundColor: "#e84118" }}>
+            Seven
+          </div>
+        </CarouselItem>
+        <CarouselItem>
+          <div className="item" style={{ backgroundColor: "#8c7ae6" }}>
+            Eight
+          </div>
+        </CarouselItem>
+        <CarouselItem>
+          <div className="item" style={{ backgroundColor: "#833471" }}>
+            Nine
+          </div>
+        </CarouselItem>
+        <CarouselItem>
+          <div className="item" style={{ backgroundColor: "#009432" }}>
+            Ten
+          </div>
+        </CarouselItem>
+        {state.autoplay && (
+          <AutoScroll key="autoplay" duration={3000}></AutoScroll>
+        )}
+        <BackButton key="back">&lsaquo;</BackButton>
+        <NavigationButtonCollectionComponent key="button-collection"></NavigationButtonCollectionComponent>
+        <NextButton key="next">&rsaquo;</NextButton>
+      </Carousel>
     </ThemeProvider>
   );
 }

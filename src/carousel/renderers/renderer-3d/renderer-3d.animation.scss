@@ -1,0 +1,22 @@
+.carousel_3d {
+  .slide-enter,
+  .slide-exit {
+    transition: all 500ms ease-in;
+  }
+
+  .slide-enter {
+    opacity: 0;
+  }
+
+  .slide-enter-active {
+    opacity: 1;
+  }
+
+  .slide-exit {
+    opacity: 1;
+  }
+
+  .slide-exit-active {
+    opacity: 0;
+  }
+}

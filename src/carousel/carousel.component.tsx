@@ -20,11 +20,16 @@ export const Carousel: FunctionComponent<CarouselProps> = ({
   controller,
   children,
 }) => {
-  const ref = useRef(
-    controller && typeof controller === "function"
-      ? new controller()
-      : controller || new DefaultCarouselControllerContext()
-  );
+  const externalControllerRef = useRef<CarouselProps['controller']>(undefined);
+  
+  const activeControllerRef = useRef<CarouselControllerContext | undefined>(undefined);
+  activeControllerRef.current = getOrCreateController({
+    current: activeControllerRef.current,
+    previousExternal: externalControllerRef.current,
+    nextExternal: controller
+  });
+
+  externalControllerRef.current = controller;
 
   const [state, setState] = useState<CarouselState>({ action: "none" });
 
@@ -63,7 +68,7 @@ export const Carousel: FunctionComponent<CarouselProps> = ({
           )
       : [];
 
-  const carouselController = createController(ref.current, state, setState);
+  const carouselController = createController(activeControllerRef.current!, state, setState);
 
   carouselController.setItems(items as any);
 
@@ -77,3 +82,26 @@ export const Carousel: FunctionComponent<CarouselProps> = ({
     </CarouselContext.Provider>
   );
 };
+
+function getOrCreateController(opt: {
+  current: CarouselControllerContext | undefined,
+  previousExternal: CarouselProps['controller'], 
+  nextExternal: CarouselProps['controller']
+}) {
+  const { current, nextExternal } = opt;
+  if(hasChanged(opt)) {
+    return nextExternal && typeof nextExternal === "function"
+    ? new nextExternal()
+    : nextExternal || new DefaultCarouselControllerContext();  
+  }
+
+  return current;
+}
+
+function hasChanged({ current, previousExternal, nextExternal }: {
+  current: CarouselControllerContext | undefined,
+  previousExternal: CarouselProps['controller'], 
+  nextExternal: CarouselProps['controller']
+}) {
+  return !current || (!previousExternal && nextExternal) || (previousExternal !== nextExternal);
+}

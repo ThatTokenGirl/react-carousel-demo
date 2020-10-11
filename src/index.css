@@ -19,16 +19,6 @@ code {
     monospace;
 }
 
-#root {
-  width: 1280px;
-  display: grid;
-  align-items: center;
-  justify-content: center;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin: auto;
-}
-
 .carousel-container {
   grid-column: 1 / -1;
 }

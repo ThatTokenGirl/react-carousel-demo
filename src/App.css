@@ -1,3 +1,9 @@
+#root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+
 .carousel-container {
   position: relative;
   width: 1280px;
@@ -14,6 +20,11 @@
   padding: 1rem;
 
   opacity: 0.2;
+}
+
+.carousel_3d + .carousel-controls-container {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .carousel-controls-container:hover {
